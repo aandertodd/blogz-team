@@ -1,9 +1,10 @@
 from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from hashutils import make_salt, make_pw_hash, check_pw_hash
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:blogz@localhost:8889/blogz'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz-team:blogz-team@localhost:8889/blogz-team'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = 'maggieisababe'
@@ -23,12 +24,12 @@ class Blog(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
-    password = db.Column(db.String(120))
+    pw_hash = db.Column(db.String(120))
     blogs = db.relationship('Blog', backref='owner')
 
     def __init__(self, username, password):
         self.username = username
-        self.password = password
+        self.pw_hash = make_pw_hash(password)
 
 @app.before_request
 def require_login():
@@ -49,14 +50,14 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
+        if user and check_pw_hash(password, user.pw_hash):
             session['username'] = username
             flash('Logged in', 'success')
             return redirect('/newpost')
         if not user or user == '':
             flash('User don\'t exist, duder.', 'error')
             return render_template('login.html')
-        if user.password != password or password == '':
+        if user.pw_hash != check_pw_hash(password, user.pw_hash) or password == '':
             flash('Wrong password', 'error')
             return render_template('login.html')
 
@@ -75,10 +76,10 @@ def signup():
             flash('Invalid username')
             return render_template('signup.html')
         if verify != password:
-            flash('Passwords don\'t fucking match, dude.')
+            flash('Passwords don\'t friggin\' match, dude.')
             return render_template('signup.html')
         if password == '':
-            flash('Please enter a fuggin\' password, guy.')
+            flash('Please enter a friggin\' password, guy.')
             return render_template('signup.html')
 
         existing_user = User.query.filter_by(username=username).first()
@@ -89,6 +90,7 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             flash('Logged in')
+            session['username'] = username
             return redirect('/newpost')
 
     return render_template('signup.html')
