@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<a href='http://localhost:5000/blog'>Main Blog Page</a>
+<a href='/logout'>log out</a>
+<h1><center>Add a Blog Entry</center></h1>
+
+<form method='post'>
+
+    <label> Title for your new blog:<br>
+        <input type='text' name='new_blog_title' value='{{new_blog_title}}'>
+        <p class='error'>{{title_error}}</p>
+    </label>
+    <br>
+    <br>
+    <label> Your new blog:<br>
+        <textarea name='new_blog_body' value='{{new_blog_body}}'></textarea>
+        <p class='error'>{{body_error}}</p>
+    </label>
+    <br>
+    <br>
+
+    <input type='submit' value='Add Entry'>
+
+
+</form>
+{% endblock %}

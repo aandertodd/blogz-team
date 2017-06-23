@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content  %}
+
+<h1>Build A Blog</h1>
+
+{% for post in blog_posts %}
+<div style='border:1px solid black; border-radius:3px; margin:10px; padding:10px; width:50%; background-color:pink;'>
+    <h3><a href='blog?id={{post.id}}'>{{ post.title }}</a></h3>
+    <p>{{ post.body }}</p>
+
+    <p>Written by <a href='blog?user={{post.owner.id}}'>{{post.owner.username}}</a></p>
+
+</div>
+{% endfor %}
+
+{% endblock %}

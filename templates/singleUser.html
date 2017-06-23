@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+
+{% for blog in blog_posts %}
+{{blog.owner.title}}
+{{blog.owner.body}}
+{% endfor %}
+
+
+{% endblock %}

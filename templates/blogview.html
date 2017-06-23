@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<h1>{{ one_blog.title }}</a></h3>
+
+<p>{{ one_blog.body }}</p>
+
+<p>Written by <a href='blog?user={{one_blog.owner.id}}'>{{one_blog.owner.username}}</a></p>
+
+
+
+
+{% endblock %}
